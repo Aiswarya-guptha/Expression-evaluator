@@ -40,7 +40,7 @@ long double takeVal(FILE *fp, char *ch ,FILE *fp1 ){
 
 void pushVal(long double operand,struct valStack*valHead){
 	//pushes operand on top 
-	struct valStack* newVal=(struct valStack*) malloc(sizeof(struct valStack*));
+	struct valStack* newVal=(struct valStack*) malloc(sizeof(struct valStack));
 	newVal->val=operand;
 	newVal->preVal=valHead->preVal;
 	valHead->preVal=newVal;
@@ -63,7 +63,7 @@ long double popVal(struct valStack* valHead){
 	struct valStack* temp= valHead->preVal;
 	long double ret=valHead->preVal->val;
 	valHead->preVal=valHead->preVal->preVal;
-	//delete(temp);
+	free(temp);
 	temp=NULL;
 	return ret;
 }
@@ -212,7 +212,7 @@ int main(){
 				if(ch=='*'){
 					ch=(char)fgetc(fp);
 					fputc(ch,fp1);
-					//checking for power
+					//checking for power operator
 					if(ch=='*'){
 						pushOp('^',operatorHead,valHead,fp,fp1);
 						ch=(char)fgetc(fp);		//take next char
@@ -245,13 +245,13 @@ int main(){
 			printf( "%g \n",valHead->preVal->val);
 			fprintf_s(fp1,"=%g",valHead->preVal->val);
 		}
-		isOperator='n';									//initializes to start from operand
+		isOperator='n';			//initializes to start from operand
 	}
 	//goes back to starting position and reads 
 	fclose(fp);
 	fclose(fp1);
-    remove("input.txt");
-    rename("tempInput.txt","input.txt");
+    	remove("input.txt");
+	rename("tempInput.txt","input.txt");	//it will make it look like editing the same file
 	_getch();
 	return 0;
 }
